@@ -3,8 +3,8 @@
   <RobinChat
     v-if="tokenIsReady"
     :api-key="$config.robinApiKey"
-    :user-token="users[0].user_token"
-    user-name="Idorenyin Udoh"
+    :user-token="users[1].user_token"
+    user-name="Ekwueme Ayo"
     :keys="keys"
     :users="users"
   />
