@@ -1,5 +1,13 @@
 <template>
-  <RobinChat v-bind="robinCreds" />
+  <!-- ... -->
+  <RobinChat
+    v-if="tokenIsReady"
+    :api-key="apiKey"
+    :user-token="users[0].user_token"
+    user-name="Idorenyin Udoh"
+    :keys="keys"
+    :users="users"
+  />
 </template>
 
 <script>
@@ -9,43 +17,58 @@ export default {
   name: 'IndexPage',
   data () {
     return {
-      robinCreds: {
-        apiKey: 'NT-HfhLppTjlXOhWQCFsTMIUSVvDYHgnosJEgqA',
-        userToken: 'random_tokenIDKwhat2SAY',
-        userName: 'Idorenyin Udoh',
-        keys: {
-          userToken: 'user_token',
-          profileImage: 'profile_image',
-          userName: 'user_name'
+      tokenIsReady: false,
+      apiKey: 'NT-HfhLppTjlXOhWQCFsTMIUSVvDYHgnosJEgqA',
+      keys: {
+        userToken: 'user_token',
+        profileImage: 'profile_image',
+        userName: 'user_name'
+      },
+      users: [
+        {
+          user_token: '',
+          profile_image: '',
+          user_name: 'idorenyin'
         },
-        users: [
-          {
-            user_token: 'random_tokenIDKwhat2SAY',
-            profile_image: 'https://randomuser.me/api/portraits/men/34.jpg',
-            user_name: 'Idorenyin Udoh'
-          },
-          {
-            user_token: 'random_tokennIKwhat2SAY',
-            profile_image: 'https://randomuser.me/api/portraits/men/34.jpg',
-            user_name: 'Ekwueme Elvis'
-          }
-        ]
-      }
+        {
+          user_token: '',
+          profile_image: '',
+          user_name: 'ayo'
+        },
+        {
+          user_token: '',
+          profile_image: '',
+          user_name: 'elvis'
+        },
+        {
+          user_token: '',
+          profile_image: '',
+          user_name: 'favour'
+        },
+        {
+          user_token: '',
+          profile_image: '',
+          user_name: 'enoch'
+        }
+      ]
     }
   },
-  mounted () {
-    this.createUserToken()
+  created () {
+    this.createTokens()
   },
   methods: {
-    async createUserToken () {
-      const robin = new Robin('NT-HfhLppTjlXOhWQCFsTMIUSVvDYHgnosJEgqA')
-      const response = await robin.createUserToken({
-        meta_data: {
-          username: 'idorenyin'
-        }
-      })
-
-      console.log(response)
+    async createTokens () {
+      const robin = new Robin(this.$config.robinApiKey, true)
+      for (let i = 0; i < this.users.length; i++) {
+        await robin.createUserToken({
+          meta_data: {
+            username: this.users[i].user_name
+          }
+        }).then((res) => {
+          this.users[i].user_token = res.data.user_token
+        })
+      }
+      this.tokenIsReady = true
     }
   }
 }
